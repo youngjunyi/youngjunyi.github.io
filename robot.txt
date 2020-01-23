@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://youngjunyi.github.io/sitemap.xml
