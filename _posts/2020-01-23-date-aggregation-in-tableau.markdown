@@ -14,7 +14,7 @@ categories: Analytics
 
 &nbsp;&nbsp;그럼 이제 List of values에서 입력한 'day','week','month'에 실제로 대응할 디멘션을 만들 차례다. 여기서는 데이터 소스에서 제공하는 날짜 디멘션을 'Date'로 가정하여 사용한다. 'Create Calculated Field'기능을 이용해 다음과 같이 **Date Aggregated**라는 디멘션을 생성해보도록 하자.
 
-```SQL
+```sql
 #Date Aggregated 
   CASE [Date Aggregation]
     WHEN 'day' THEN DATETRUNC('day', [Date])
@@ -32,7 +32,7 @@ categories: Analytics
 
 &nbsp;&nbsp;여기서 태블로가 제공하는 'Quick Table Calculation' > 'Percent Difference'를 이용하면 WoW와 MoM을 쉽게 구현할 수 있다. **Date Aggregation** 파라미터에서 'Weekly'를 선택하면 'Percent Difference'가 바로 WoW이고 'Monthly'를 선택하면 MoM이 되는 것이다. YoY는 어떨까? 필자의 경우에는 다음과 같은 Calculated Field를 통해 구현했다.  
 
-```SQL
+```sql
 #Sessions prev year
   IF ([Date Aggregation] = 'day') THEN LOOKUP(zn(sum([Sessions])),-364)
   ELSEIF ([Date Aggregation] = 'week') THEN LOOKUP(zn(sum([Sessions])),-52)
