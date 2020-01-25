@@ -3,7 +3,7 @@ author: Youngjun Yi
 email: youngjun.yakup.yi@gmail.com
 url: https://youngjunyi.github.io
 description: > # this means to ignore newlines until "show_exerpts:"
-  일과 공부를 통해 배우고 구현한 내용들을 기록으로 남기는 과정
+  일과 공부를 통해 배우고 구현한 내용들을 기록으로 남기는 과정. 주로 마케팅과 데이터에 관한 글을 씁니다.
 show_excerpts: true # set to true to show excerpts on the homepage
 
 # Minima date format
