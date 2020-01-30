@@ -34,7 +34,7 @@ categories: Analytics
 
 <img src="/assets/image/copenhagen.PNG" width="100%" height="100%">&nbsp;&nbsp; 
 
-&nbsp;&nbsp; 예시로 코펜하겐에 리스팅 된 숙소들의 구획별 평균 가격(파란색 density)과 개별 숙소별 평균 가격(빨간색 density)을 시각화 한 모습이다. MAKEPOINT함수를 이용해 위도와 경도값을 MultiPolygon에 연결함으로써 특정 구획과 그 구획에 속하는 개별 숙소들의 데이터를 함께 다룰 수가 있게 되었다.
+&nbsp;&nbsp; 예시로 코펜하겐에 리스팅 된 숙소들의 구획별 평균 가격(파란색 density)과 개별 숙소별 평균 가격(빨간색 density)을 시각화 한 모습이다. MAKEPOINT함수를 이용해 위도와 경도값을 MultiPolygon에 연결함으로써 특정 구획과 그 구획에 속하는 개별 숙소들의 데이터를 함께 다룰 수 있게 되었다.
 
 
 
