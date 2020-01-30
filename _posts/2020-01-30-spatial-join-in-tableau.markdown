@@ -4,7 +4,7 @@ title:  "4.태블로에서 공간(Spatial)데이터 연결(Join)하기"
 date:   2020-01-30
 categories: Analytics
 ---
-&nbsp;&nbsp; 태블로에서 지도에 데이터 시각화를 하다보면 다양한 타입의 공간 데이터를 다루게 된다. 그 중 가장 흔한 것이 아마 위도(latitude)와 경도(longitude)일테고, 더 나아가서는 Point, LineString, Polygon, MultiPolygon 등이 있다. 이번 포스팅에서는 특정 지점의 위치를 규정하는 위도와 경도 를 태블로에서 'Point' 타입으로 만들어 'MultiPolygon'과 Join하는 방법에 대해 간단하게 정리하고자 한다.  
+&nbsp;&nbsp; 태블로에서 지도를 바탕으로 데이터 시각화를 하다보면 다양한 타입의 공간 데이터를 다루게 된다. 그 중 가장 흔한 것이 아마 위도(Latitude)와 경도(Longitude)일테고, 더 나아가서는 Point, LineString, Polygon, MultiPolygon 등이 있을 것이다. 이번 포스팅에서는 특정 지점의 위치를 규정하는 위도와 경도를 태블로에서 Point 타입으로 만들어 MultiPolygon과 join하는 방법에 대해 간단하게 정리하고자 한다.  
 
 &nbsp;&nbsp; 예시 데이터로 [Inside Airbnb][Inside Airbnb]라는 에어비앤비 리스팅 및 관련 지역 정보를 제공하는 사이트의 데이터를 가져왔다. Inside Airbnb에서는 여러 종류의 데이터를 제공하고 있지만, 포스팅의 목적에 맞게 (1)특정 도시 내 숙소의 위도와 경도 데이터를 가져올 **listings.csv** 파일, 그리고 (2)해당 도시의 구획 정보를 MultiPolygon 타입의 데이터로 불러올 **neighbourhoods.geojson**파일만 다운로드 받으면 된다. 필자는 코펜하겐을 대상 도시로 고르고 데이터를 다운로드 받았다. 그럼 이제 태블로에 데이터를 업로드하자. 
 
@@ -14,11 +14,11 @@ categories: Analytics
 
 <img src="/assets/image/neighbourhoods.PNG" width="50%" height="50%">&nbsp;&nbsp; 
 
-&nbsp;&nbsp; 두 번째 파일은 일단 csv파일이 아니라 [GeoJson][GeoJson]파일이다. 태블로에서 미리보기를 하면 테이블에 구획 이름(Neighbourhood)을 기준으로 'Geometry'컬럼에 'MULTIPOLYGON'이라고만 표시되고 실제 값은 보이지 않는다. 하지만 이 GeoJson파일을 메모장으로 열어보면 다음 스크린샷과 같이 보이는데, 여러 경도와 위도값들이 Json형식으로 nested되어 있는 것을 알 수 있다. 이 값을 태블로는 자동으로 'MultiPolygon' 데이터 타입으로 인식한다. 
+&nbsp;&nbsp; 두 번째 파일은 일단 csv파일이 아니라 [GeoJson][GeoJson]파일이다. 태블로에서 미리보기를 하면 테이블에 구획 이름(Neighbourhood)을 기준으로 'Geometry'컬럼에 'MULTIPOLYGON'이라고만 표시되고 실제 값은 보이지 않는다. 하지만 이 GeoJson파일을 메모장으로 열어보면 다음 스크린샷과 같이 보이는데, 여러 경도와 위도값들이 json형식으로 nested되어 있는 것을 알 수 있다. 이 값을 태블로는 자동으로 MultiPolygon타입의 데이터로서 인식한다. 
 
 <img src="/assets/image/geojson.PNG" width="50%" height="50%">&nbsp;&nbsp; 
 
-&nbsp;&nbsp; 이제 태블로에서 첫 번째 파일의 숙소 '위치(위도와 경도)'를 두 번째 파일의 '구획'과 연결해보자. 연결하는 원리는 구획이라는 'MultiPolygon'타입 데이터에 위도와 경도값이 intersect할 수 있도록 'Point'타입의 데이터로 만들어주는 것이다. 태블로에서는 이를 구현할 수 있도록 **MAKEPOINT**라는 내장 함수를 제공한다.  
+&nbsp;&nbsp; 이제 태블로에서 첫 번째 파일의 숙소 '위치(위도와 경도)'를 두 번째 파일의 '구획'과 연결해보자. 연결하는 원리는 구획이라는 MultiPolygon타입 데이터에 위도와 경도값이 intersect할 수 있도록 Point타입의 데이터로 만들어주는 것이다. 태블로에서는 이를 구현할 수 있도록 **MAKEPOINT**라는 내장 함수를 제공한다.  
 
 <img src="/assets/image/spatial_join.PNG" width="50%" height="50%">&nbsp;&nbsp; 
 
