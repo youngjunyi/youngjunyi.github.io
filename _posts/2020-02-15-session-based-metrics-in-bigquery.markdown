@@ -4,9 +4,9 @@ title:  "5.빅쿼리(BigQuery)와 세션 지표(Session-based Metrics)"
 date:   2020-02-15
 categories: Analytics
 ---
-&nbsp;&nbsp; 구글 애널리틱스(Google Analytics)에서 볼 수 있는 데이터를 더 세부적으로 보고 싶을 때 빅쿼리(BigQuery)를 찾게 된다. 구글 애널리틱스에서는 데이터가 이미 날짜나 채널 등의 여러가지 단위로 요약이 되어있지만, 빅쿼리에서는 user, visitor, session, visit, hit 등의 레벨로 원하는 만큼 데이터를 파고 들어갈 수 있다. 그렇다면 보통 어떤 상황에서 이렇게 hit 레벨까지 들어가 디테일한 내역을 확인하게 되는 것일까? 마케팅 관점의 케이스로는 Product Activation 지표를 더 세밀하게 보고자 하는 경우가 있을 것이다. 예를 들어 어떤 이커머스 웹사이트에서 '검색'이라는 activation이 일어났다고 할 때, 그 activation에 묶여있는 '페이지 내 특정 버튼 클릭 여부'와 같은 세부적인 이벤트를 보고자 하는 것이다. 
+&nbsp;&nbsp; 구글 애널리틱스(Google Analytics)에서 볼 수 있는 데이터를 더 세부적으로 보고 싶을 때 빅쿼리(BigQuery)를 쓰게 된다. 구글 애널리틱스에서는 데이터가 이미 날짜나 채널 등의 여러가지 단위로 요약이 되어있지만, 빅쿼리에서는 user/visitor/session/visit/hit 등의 레벨로 원하는 만큼 데이터를 파고 들어갈 수 있다. 그렇다면 보통 어떤 상황에서 이렇게 hit 레벨까지 들어가 디테일한 내역을 확인하게 되는 것일까? 마케팅 관점의 케이스로는 Product Activation 지표를 더 세밀하게 보고자 하는 경우가 있을 것이다. 예를 들어 어떤 이커머스 웹사이트에서 '검색'이라는 activation이 일어났다고 할 때, 그 activation에 묶여있는 '페이지 내 특정 버튼 클릭 여부'와 같은 세부적인 이벤트를 보고자 하는 것이다. 
 
-&nbsp;&nbsp; 이번 포스팅에서는 빅쿼리에서 이러한 세부 이벤트를 불러와 세션 기반의 지표(Session-based Metrics)로 표현하는 방법에 대해 정리해보고자 한다. 여기서는 일반적으로 쓰이는 **"ga_sessions_YYYYMMDD"** 형식의 [BigQuery Export Schema][BigQuery Export Schema]내 테이블을 사용하는 것을 전제로 한다. 
+&nbsp;&nbsp; 이번 포스팅에서는 빅쿼리에서 이러한 세부 이벤트를 불러와 세션 기반의 지표(Session-based Metrics)로 표현하는 방법에 대해 정리해보고자 한다. 여기서는 일반적으로 쓰이는 **ga_sessions_YYYYMMDD** 형식의 [BigQuery Export Schema][BigQuery Export Schema]내 테이블을 사용하는 것을 전제로 한다. 
 
 &nbsp;&nbsp; 빅쿼리에서 이미 flatten되어있는 정규형 테이블만 쓰다가 ga_sessions_YYYYMMDD 테이블을 처음으로 썼을 때 **sessionId**라는 필드가 없어서 당황했던 기억이 난다. 그러나 sessionId는 fullVisitorId와 visitId의 조합일 뿐이니 하기와 같이 sessionId 필드를 만들어주면 된다. 
 
