@@ -8,7 +8,7 @@ categories: Analytics
 
 &nbsp;&nbsp; 이번 포스팅에서는 빅쿼리에서 이러한 세부 이벤트를 불러와 세션 기반의 지표(Session-based Metrics)로 표현하는 방법에 대해 정리해보고자 한다. 여기서는 일반적으로 쓰이는 **ga_sessions_YYYYMMDD** 형식의 [BigQuery Export Schema][BigQuery Export Schema]내 테이블을 사용하는 것을 전제로 한다. 
 
-&nbsp;&nbsp; 빅쿼리에서 이미 flatten되어있는 정규형 테이블만 쓰다가 ga_sessions_YYYYMMDD 테이블을 처음으로 썼을 때 **sessionId**라는 필드가 없어서 당황했던 기억이 난다. 그러나 sessionId는 fullVisitorId와 visitId의 조합일 뿐이니 하기와 같이 sessionId 필드를 만들어주면 된다. 
+&nbsp;&nbsp; 빅쿼리에서 이미 flatten되어있는 정규형 테이블만 쓰다가 ga_sessions_YYYYMMDD 테이블을 처음으로 썼을 때 **sessionId**라는 필드가 없어서 당황했던 기억이 난다. 그러나 sessionId는 fullVisitorId와 visitId의 조합일 뿐이니, 침착하게 하기와 같이 sessionId 필드를 만들면 된다. 
 
 ```sql
 CONCAT(fullvisitorId,STRING(visitId)) AS sessionId
