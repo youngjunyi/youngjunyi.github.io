@@ -25,7 +25,7 @@ hits.type = 'PAGE' AND REGEXP_MATCH(hits.page.pagePath, '/search/')
 hits.type = 'EVENT' AND hits.event.eventCategory = 'FilterApply')
 ```
 
-&nbsp;&nbsp; 이처럼 **hits**로 시작하는 필드들을 활용하면 웹사이트 내에 규정되어있는 여러가지 이벤트들을 포착할 수 있는데, 기본적으로 제공되는 컬럼들은 [BigQuery Export Schema 문서][BigQuery Export Schema]에 잘 정리가 되어있다. 또한 이벤트 값들이 어떻게 기록되고 있는지 확실하지 않을 때는 [Google Analytics Debugger][GA Debugger]를 크롬에 설치한 후 Developer Tools에서 하단 스크린샷과 같이 직접 페이지와 이벤트를 로드해 보면 해당하는 값들을 확인할 수 있다. 
+&nbsp;&nbsp; 이처럼 **hits**로 시작하는 필드들을 활용하면 웹사이트 내에 정의되어있는 여러가지 이벤트들을 포착할 수 있는데, 기본적으로 제공되는 컬럼들은 [BigQuery Export Schema 문서][BigQuery Export Schema]에 잘 정리가 되어있다. 또한 이벤트 값들이 어떻게 기록되고 있는지 확실하지 않을 때는 [Google Analytics Debugger][GA Debugger]를 크롬에 설치한 후 Developer Tools에서 하단 스크린샷과 같이 직접 페이지와 이벤트를 로드해 보면 해당하는 값들을 확인할 수 있다. 
 
 
 <img src="/assets/image/ga_debugger.png" width="100%" height="100%">
@@ -38,7 +38,7 @@ IF(hits.type = 'PAGE' AND REGEXP_MATCH(hits.page.pagePath, '/search/'),1,0) AS S
 IF(hits.type = 'EVENT' AND hits.event.eventCategory = 'FilterApply',1,0) AS Filter
 ```
 
-&nbsp;&nbsp; 그리고 이렇게 만든 서브쿼리의 필드들을 Aggregate하여 하기와 같이 메인쿼리의 필드로 만들 수 있다. 
+&nbsp;&nbsp; 그리고 이렇게 만든 서브쿼리의 필드들을 aggregate하여 하기와 같이 메인쿼리의 필드로 만들 수 있다. 
 
 ```sql
 #(1) activation의 횟수
