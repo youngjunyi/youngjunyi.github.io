@@ -27,10 +27,30 @@ fig.set_size_inches(16,9)
 ```
 <img src="/assets/image/decomposition.png" width="100%" height="100%">&nbsp;&nbsp;  
 
-&nbsp;&nbsp; 여기서 우리는 이 데이터가 월별 출국자 숫자이기 때문에 해당 데이터에 seasonality가 있을 것이라고 쉽게 예상할 수 있다. 여기서는 그러한 seasonality가 1년 단위로 반복되는 경향이 있다고 추측했기 때문에 'freq=12'로 설정했고, 따라서 그래프의 3번째 부분에서 12개월 단위로 decompose된 seasonality를 볼 수 있다. 데이터에 주별, 분기별 등의 경향이 있다고 예상하는 경우 freq 파라미터를 적절하게 조정해주면 된다. 
+&nbsp;&nbsp; 여기서 우리는 이 데이터가 월별 출국자 숫자이기 때문에 해당 데이터에 seasonality가 있을 것이라고 쉽게 예상할 수 있다. 여기서는 그러한 seasonality가 1년 단위로 반복되는 경향이 있다고 추측했기 때문에 'freq=12'로 설정했고, 따라서 위의 3번째 그래프에서 12개월 단위로 decompose된 seasonality를 볼 수 있다. 데이터에 주별, 분기별 등의 경향이 있다고 예상하는 경우 freq 파라미터를 적절하게 조정해주면 된다. 
 
 
 **2.Stationarity**
+
+&nbsp;&nbsp; ARIMA 모델 학습에 있어서 중요한 부분은 시계열 데이터가 평균과 분산이 일정한 [정상성(Stationarity)][Stationarity]을 갖추고 있는지를 먼저 검증하는 것이다. 여기서 우리의 월별 출국자 데이터는 해가 지날수록 우상향하는 추세를 보이므로 정상성을 갖추고 있다고 볼 수 없고, 이를 위해 뒤에서 차분(differencing)이라는 방법을 통해 시계열 데이터가 정상성을 나타내도록 처리할 것이다. 지금 단계에서는 일단 'Augemented Dickey-Fuller Unit Root Test' 라는 함수를 통해 정상성을 검증하도록 하자. statsmodels의 adfuller가 바로 그 함수인데 결과값을 친절하게 표시해주지 않기 때문에 하기와 같이 별도의 함수로 만들어줬다. 
+
+```python
+from statsmodels.tsa.stattools import adfuller
+
+def adfuller_test(data):
+    result = adfuller(data)
+    print('Augmented Dickey-Fuller Unit Root Test:')
+    labels = ['Test Statistic', 'p-value', 'Number of Lags', 'Number of Obsevations']
+    
+    for value,label in zip(result,labels):
+        pring(label+' : '+str(value))
+        
+    if result[1] <= 0.05:
+        print("Reject the null hypothesis. Data has no unit root and is stationary")
+    else: 
+        print("Time series has a unit root, indicating it is non-stationary")
+```
+
 
 **3.Differencing**
 
@@ -51,3 +71,4 @@ fig.set_size_inches(16,9)
 [Prophet]: https://facebook.github.io/prophet/
 [Tableau Forecasting]: https://help.tableau.com/current/pro/desktop/en-us/forecast_how_it_works.htm
 [KAC Stats]: https://www.airport.co.kr/www/extra/stats/timeSeriesStats/layOut.do?cid=2015102917505292435&menuId=399
+[Stationarity]: https://otexts.com/fpp2/stationarity.html
