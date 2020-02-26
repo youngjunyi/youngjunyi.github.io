@@ -6,7 +6,7 @@ categories: Analytics
 --- 
 &nbsp;&nbsp; 마케팅에서 예측(forecasting)은 수요나 매출 예측 등 거시적인 목적으로도 많이 쓰이지만, 개인적으로는 단기적인 마케팅 캠페인의 성과를 측정하기 위한 여러가지 방법을 고민하면서 forecasting 기법에 대해 더 깊은 관심을 갖게 되었다. 예측을 활용한 성과 측정 방식의 논리를 거칠게 말하자면 forecasting 기법을 통해 'synthetic control'이라는 조건법적(counterfactual) 결과를 만들어 실제 결과와 비교하는 것이다(e.g., 이 캠페인을 하지 않았더라면 vs. 실제로 이 캠페인을 했더니).  
 
-<img src="/assets/image/synthetic_control.png" width="70%" height="70%">&nbsp;&nbsp;  
+<img src="/assets/image/synthetic_control_.png" width="70%" height="70%">&nbsp;&nbsp;  
 
 _Figure 1. Synthetic Control_ _(source:_ [_World Bank Blog_][World Bank Blog]_)_
   
