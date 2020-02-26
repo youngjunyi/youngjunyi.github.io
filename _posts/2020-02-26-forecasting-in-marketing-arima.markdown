@@ -32,7 +32,7 @@ fig.set_size_inches(16,9)
 
 **2.Stationarity**
 
-&nbsp;&nbsp; ARIMA 모델 학습에 있어서 중요한 부분은 시계열 데이터가 평균과 분산이 일정한 [정상성(Stationarity)][Stationarity]을 갖추고 있는지를 먼저 검증하는 것이다. 여기서 우리의 월별 출국자 데이터는 해가 지날수록 우상향하는 추세를 보이므로 정상성을 갖추고 있다고 볼 수 없고, 이를 위해 뒤에서 차분(differencing)이라는 방법을 통해 시계열 데이터가 정상성을 나타내도록 처리할 것이다. 지금 단계에서는 일단 'Augemented Dickey-Fuller Unit Root Test' 라는 함수를 통해 정상성을 검증하도록 하자. statsmodels의 adfuller가 바로 그 함수인데 결과값을 친절하게 표시해주지 않기 때문에 하기와 같이 별도의 함수로 만들어줬다. 
+&nbsp;&nbsp; ARIMA 모델 학습에 있어서 중요한 부분은 시계열 데이터가 평균과 분산이 일정한 [정상성(Stationarity)][Stationarity]을 갖추고 있는지를 먼저 검증하는 것이다. 여기서 우리의 월별 출국자 데이터는 해가 지날수록 우상향하는 추세를 보이므로 정상성을 갖추고 있다고 볼 수 없고, 이를 위해 뒤에서 차분(differencing)이라는 방법을 통해 시계열 데이터가 정상성을 나타내도록 처리할 것이다. 지금 단계에서는 일단 'Augemented Dickey-Fuller Unit Root Test' 라는 함수를 통해 정상성을 검증하도록 하자. statsmodels의 adfuller가 바로 그 함수인데 테스트 결과값을 읽기 쉽게 표시해주지 않기 때문에 하기와 같이 별도의 함수로 만들어줬다. 
 
 ```python
 from statsmodels.tsa.stattools import adfuller
