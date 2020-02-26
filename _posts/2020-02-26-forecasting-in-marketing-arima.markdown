@@ -4,7 +4,7 @@ title:  "6.마케팅과 예측(forecasting) - 1.ARIMA"
 date:   2020-02-26
 categories: Analytics
 --- 
-&nbsp;&nbsp; 마케팅에서 예측(forecasting)은 수요나 매출 예측 등 거시적인 목적으로도 많이 쓰이지만, 개인적으로는 단기적인 마케팅 캠페인의 성과를 측정하기 위한 여러가지 방법을 고민하면서 forecasting 기법에 대해 더 깊은 관심을 갖게 되었다. 예측을 활용한 성과 측정 방식의 논리를 거칠게 말하자면 forecasting 기법을 통해 'synthetic control'이라는 조건법적(counterfactual) 결과를 만들어 실제 결과와 비교하는 것이다(e.g., 이 캠페인을 하지 않았더라면 vs. 실제로 이 캠페인을 했더니).  
+&nbsp;&nbsp; 마케팅에서 예측(forecasting)은 수요나 매출 예측 등 거시적인 목적으로도 많이 쓰이지만, 개인적으로는 단기적인 마케팅 캠페인의 효과를 측정하기 위한 여러가지 방법을 고민하면서 forecasting 기법에 대해 더 깊은 관심을 갖게 되었다. Forecasting을 활용한 효과 측정의 논리를 거칠게 말하자면 forecasting 기법을 통해 'synthetic control'이라는 조건법적(counterfactual) 결과를 만들어 실제 결과와 비교하는 것이다(e.g., 이 캠페인을 하지 않았더라면 vs. 실제로 이 캠페인을 했더니).  
 
 <img src="/assets/image/synthetic_control_.png" width="70%" height="70%">&nbsp;&nbsp;  
 
@@ -14,9 +14,40 @@ _Figure 1. Synthetic Control_ _(source:_ [_World Bank Blog_][World Bank Blog]_)_
 
 &nbsp;&nbsp; 그러나 이처럼 접근이 상대적으로 용이한 방법론들을 살펴보기 전에, 본 포스팅에서는 먼저 ARIMA(Auto-Regressive Integrated Moving Average)라는 그 유래가 1930년대까지 거슬러 올라가는 클래식(?)한 시계열 예측 모델을 파이썬으로 적용하고 구현하는 방법에 대해서 정리하고자 한다.   
 
+**1.Decomposition**
+
+&nbsp;&nbsp; 먼저 예측에 사용하고 싶은 데이터를 Pandas DataFrame형태로 가공한 것을 전제로 한다. 여기서는 [한국공항공사][KAC Stats]에서 2000년 1월부터 2020년 1월까지의 월별 여객 출국자 수를 불러왔다. 그리고 statsmodels 패키지에서 seasonal_decompose를 불러와 준비한 데이터를 decompose해보도록 한다. 
+
+```python
+from statsmodels.tsa.seasonal import seasonal_decompose
+decomposition = seasonal_decompose(df['Travellers'], freq=12)
+fig = plt.figure()
+fig = decomposition.plot()
+fig.set_size_inches(16,9)
+```
+<img src="/assets/image/decomposition.png" width="100%" height="100%">&nbsp;&nbsp;  
+
+&nbsp;&nbsp; 여기서 우리는 이 데이터가 월별 출국자 숫자이기 때문에 해당 데이터에 seasonality가 있을 것이라고 쉽게 예상할 수 있다. 여기서는 그러한 seasonality가 1년 단위로 반복되는 경향이 있다고 추측했기 때문에 'freq=12'로 설정했고, 따라서 그래프의 3번째 부분에서 12개월 단위로 decompose된 seasonality를 볼 수 있다. 데이터에 주별, 분기별 등의 경향이 있다고 예상하는 경우 freq 파라미터를 적절하게 조정해주면 된다. 
+
+
+**2.Stationarity**
+
+**3.Differencing**
+
+**4.ACF/PACF Interpretation**
+
+**5.Auto-ARIMA**
+
+**6.Seasonal ARIMA**
+
+
+
+
+
 
 
 [World Bank Blog]: https://blogs.worldbank.org/impactevaluations/evaluating-regulatory-reforms-using-the-synthetic-control-method
 [CausalImpact]: https://google.github.io/CausalImpact/CausalImpact.html
 [Prophet]: https://facebook.github.io/prophet/
 [Tableau Forecasting]: https://help.tableau.com/current/pro/desktop/en-us/forecast_how_it_works.htm
+[KAC Stats]: https://www.airport.co.kr/www/extra/stats/timeSeriesStats/layOut.do?cid=2015102917505292435&menuId=399
