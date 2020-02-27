@@ -32,7 +32,7 @@ fig.set_size_inches(16,9)
 
 **2.Stationarity**
 
-&nbsp;&nbsp; ARIMA 모델 학습에 있어서 중요한 부분은 시계열 데이터가 평균과 분산이 일정한 [정상성(Stationarity)][Stationarity]을 갖추고 있는지를 먼저 검증하는 것이다. 여기서 우리의 월별 출국자 데이터는 해가 지날수록 우상향하는 추세를 보이므로 정상성을 갖추고 있다고 볼 수 없고, 이를 위해 뒤에서 차분(differencing)이라는 방법을 통해 시계열 데이터가 정상성을 나타내도록 처리할 것이다. 지금 단계에서는 일단 'Augemented Dickey-Fuller Unit Root Test' 라는 함수를 통해 정상성을 검증하도록 하자. statsmodels의 adfuller가 바로 그 함수인데 테스트 결과값을 읽기 쉽게 표시해주지 않기 때문에 하기와 같이 별도의 함수로 만들어줬다. 
+&nbsp;&nbsp; ARIMA 모델 학습에 있어서 중요한 부분은 시계열 데이터가 평균과 분산이 일정한 [정상성(Stationarity)][Stationarity]을 갖추고 있는지를 먼저 검증하는 것이다. 여기서 우리의 월별 출국자 데이터는 해가 지날수록 우상향하는 추세를 보이므로 정상성을 갖추고 있다고 볼 수 없고, 이를 위해 뒤에서 차분(differencing)이라는 방법을 통해 시계열 데이터가 정상성을 나타내도록 처리할 것이다. 지금 단계에서는 일단 'Augemented Dickey-Fuller Unit Root Test' 라는 함수를 통해 정상성을 검증하도록 하자. statsmodels의 adfuller가 바로 그 함수인데 테스트 결과값을 읽기 쉽게 표시해주지 않기 때문에 하기와 같이 별도의 함수로 만들어줬다. 이 함수는 후에 Differencing 단계에서 여러번 쓰이게 된다. 
 
 ```python
 from statsmodels.tsa.stattools import adfuller
@@ -43,7 +43,7 @@ def adfuller_test(data):
     labels = ['Test Statistic', 'p-value', 'Number of Lags', 'Number of Obsevations']
     
     for value,label in zip(result,labels):
-        pring(label+' : '+str(value))
+        print(label+' : '+str(value))
         
     if result[1] <= 0.05:
         print("Reject the null hypothesis. Data has no unit root and is stationary")
@@ -54,11 +54,59 @@ def adfuller_test(data):
 
 **3.Differencing**
 
+&nbsp;&nbsp; 후에 Seasonal ARIMA 모델을 학습시킬 때 하기와 같이 함수를 적용하게 되는데 여기서 우리는 p,d,q 그리고 P,D,Q,S라는 파라미터를 지정해줘야 한다.
+
+```python
+model = sm.tsa.statespace.SARIMAX(df['Travellers'],order=(p,d,q), seasonal_order=(P,D,Q,S))
+```
+p는 AR(Auto-Regressive) 파라미터를, 그리고 q는 MA(Moving Average)파라미터를 의미하고 d는 정상성을 찾기위해 몇 번의 lag를 써서 Differencing 해주었는지를 의미하는 파라미터이다. 대문자 P,D,Q는 같은 의미의 파라미터인데 Seasonal Differencing을 통해 찾은 파라미터 값들을 적용해주면 되고, S는 우리가 설정한 Seasonality 주기를 의미한다(여기서는 12). 이제 한 lag씩 Differencing 해보면서 적절한 d와 D값을 찾아보도록 하자.
+
+```python
+#Differencing
+df['Travellers 1st Diff'] = df['Travellers'] - df['Travellers'].shift(1)
+df['Travellers 2nd Diff'] = df['Travellers 1st Diff'] - df['Travellers 1st Diff'].shift(1)
+
+#Seasonal Differencing
+df['Seasonal Diff'] = df['Travellers'] - df['Travellers'].shift(12)
+df['Seasonal 1st Diff'] = df['Travellers 1st Diff'] - df['Travellers 1st Diff'].shift(12)
+
+#1st Differncing adfuller test
+adfuller_test(df['Travellers 1st Diff'].dropna())
+
+#1st Seasonal Differencing 
+adfuller_test(df['Seasonal 1st Diff'].dropna())
+```
+
+<img src="/assets/image/adfuller1.PNG" width="70%" height="70%">&nbsp;&nbsp;  
+<img src="/assets/image/adfuller2.PNG" width="70%" height="70%">&nbsp;&nbsp;  
+
+adfuller test 결과 lag 1 Differencing에서, 또 lag 1 Seasonal Differencing에서 정상성(Stationarity)가 인정된다. 따라서 d=1, D=1로 파라미터 값을 지정할 수 있다. 
+
+
 **4.ACF/PACF Interpretation**
 
-**5.Auto-ARIMA**
+&nbsp;&nbsp; 이제 적절한 p,q,P,Q의 값을 찾아야 하는데, 이 [페이지][Rules for parameters]에 다소 복잡한 Rule of Thumb이 잘 정리되어있다. 이를 모두 이해하기 전에 우선 ACF(Auto-Correlation Function)과 PACF(Partial Auto-Correlation Function)을 통해 바로 시각화부터 진행해보자. 
 
-**6.Seasonal ARIMA**
+```python
+figure, ((ax1, ax2)) = plt.subplots(nrows=1, ncols=2)
+figure.set_size_inches(16,6)
+ax1 = plot_acf(df["Travellers 1st Diff"].dropna(), ax=ax1)
+ax2 = plot_pacf(df["Travellers 1st Diff"].dropna(), ax=ax2)
+```
+<img src="/assets/image/acf_pacf_diff.png" width="70%" height="70%">&nbsp;&nbsp; 
+
+```python
+figure, ((ax1, ax2)) = plt.subplots(nrows=1, ncols=2)
+figure.set_size_inches(16,6)
+ax1 = plot_acf(df["Seasonal 1st Diff"].dropna(), ax=ax1)
+ax2 = plot_pacf(df["Seasonal 1st Diff"].dropna(), ax=ax2)
+```
+<img src="/assets/image/acf_pacf_seasonal_diff.png" width="70%" height="70%">&nbsp;&nbsp;
+
+
+
+
+**5.Seasonal ARIMA**
 
 
 
@@ -72,3 +120,4 @@ def adfuller_test(data):
 [Tableau Forecasting]: https://help.tableau.com/current/pro/desktop/en-us/forecast_how_it_works.htm
 [KAC Stats]: https://www.airport.co.kr/www/extra/stats/timeSeriesStats/layOut.do?cid=2015102917505292435&menuId=399
 [Stationarity]: https://otexts.com/fpp2/stationarity.html
+[Rules for parameters]: http://people.duke.edu/~rnau/arimrule.htm
