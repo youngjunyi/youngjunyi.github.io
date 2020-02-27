@@ -59,7 +59,7 @@ def adfuller_test(data):
 ```python
 model = sm.tsa.statespace.SARIMAX(df['Travellers'],order=(p,d,q), seasonal_order=(P,D,Q,S))
 ```
-p는 AR(Auto-Regressive) 파라미터를, 그리고 q는 MA(Moving Average)파라미터를 의미하고 d는 정상성을 찾기위해 몇 번의 lag를 써서 Differencing 해주었는지를 의미하는 파라미터이다. 대문자 P,D,Q는 같은 의미의 파라미터인데 Seasonal Differencing을 통해 찾은 파라미터 값들을 적용해주면 되고, S는 우리가 설정한 Seasonality 주기를 의미한다(여기서는 12). 이제 한 lag씩 Differencing 해보면서 적절한 d와 D값을 찾아보도록 하자.
+&nbsp;&nbsp; p는 AR(Auto-Regressive) 파라미터를, 그리고 q는 MA(Moving Average)파라미터를 의미하고 d는 정상성을 찾기위해 몇 번의 lag를 써서 Differencing 해주었는지를 의미하는 파라미터이다. 대문자 P,D,Q는 같은 의미의 파라미터인데 Seasonal Differencing을 통해 찾은 파라미터 값들을 적용해주면 되고, S는 우리가 설정한 Seasonality 주기를 의미한다(여기서는 12). 이제 한 lag씩 Differencing 해보면서 적절한 d와 D값을 찾아보도록 하자.
 
 ```python
 #Differencing
@@ -80,12 +80,12 @@ adfuller_test(df['Seasonal 1st Diff'].dropna())
 <img src="/assets/image/adfuller1.PNG" width="70%" height="70%">&nbsp;&nbsp;  
 <img src="/assets/image/adfuller2.PNG" width="70%" height="70%">&nbsp;&nbsp;  
 
-adfuller test 결과 lag 1 Differencing에서, 또 lag 1 Seasonal Differencing에서 정상성(Stationarity)이 인정된다. 따라서 d=1, D=1로 파라미터 값을 지정할 수 있다. 
+&nbsp;&nbsp; adfuller test 결과 lag 1 Differencing에서, 또 lag 1 Seasonal Differencing에서 정상성(Stationarity)이 인정된다. 따라서 d=1, D=1로 파라미터 값을 지정할 수 있다. 
 
 
 **4.ACF/PACF Interpretation**
 
-&nbsp;&nbsp; 이제 적절한 p,q,P,Q의 값을 찾아야 하는데, 이 [페이지][Rules for parameters]에 다소 복잡한 Rule of Thumb이 잘 정리되어있다. 이를 모두 이해하기 전에 우선 ACF(Auto-Correlation Function)과 PACF(Partial Auto-Correlation Function)을 통해 바로 시각화부터 진행해보자. 
+&nbsp;&nbsp; 이제 적절한 p,q,P,Q의 값을 찾아야 하는데, 이 [페이지][Rules for parameters]에 다소 복잡한 Rule of Thumb이 잘 정리되어있다. 이를 모두 이해하기 전에 우선 ACF(Auto-Correlation Function)와 PACF(Partial Auto-Correlation Function)을 통해 lag에 따른 Correlation을 그래프로 확인해보자. 
 
 ```python
 figure, ((ax1, ax2)) = plt.subplots(nrows=1, ncols=2)
@@ -103,11 +103,36 @@ ax2 = plot_pacf(df["Seasonal 1st Diff"].dropna(), ax=ax2)
 ```
 <img src="/assets/image/acf_pacf_seasonal_diff.png" width="70%" height="70%">&nbsp;&nbsp;
 
+&nbsp;&nbsp; 일반적으로 AR(p) 파라미터는 PACF로, MA(q) 파라미터는 ACF로 결정할 수 있다고 하는데, 시각화로만 이 파라미터 값들을 결정하기 어려운 경우도 많은 것으로 보인다. 현재 데이터에서도 'Seasonal 1st Differencing'의 경우 PACF와 ACF 모두 lag 12에 높은 Correlation을 나타내는 것으로 보아 P=1, Q=1으로 설정하는게 무난할 것으로 보이지만, 충분히 만족스러운 설명은 아니다(파라미터 튜닝과 그 함의에 대해서는 추후에 별도 포스팅에서 다뤄보고자 한다). 'Travellers 1st Differencing'의 경우에는 파라미터를 결정하기가 더욱 애매하다. PACF에서는 1,2,8,11 등의 lag에서, ACF에서도 1,3,9 등의 lag에서 Correlation이 두드러진다. 이런 경우에는 여러가지 파라미터 조합으로 모델을 만들어 각 모델의 AIC(Akaike Information Criterion)와 BIC(Bayesian Information Criterion)를 비교하여 가장 그 수치가 낮은 모델의 파라미터 조합을 선택하는 방법을 쓴다고 한다. AIC, BIC 수치는 ARIMA 모델 결과값에 나오므로, 그 수치들을 비교할 수 있게 'For' iteration을 다음과 같이 만들어보자. 
 
+```python
+import itertools
+
+d = range(1, 2)
+p = q = range(0, 3)
+pdq = list(itertools.product(p, d, q))
+#P,D,Q,S의 경우에는 위에서 각각 1,1,1,12로 결정
+
+for param in pdq:
+        try:
+            mod = sm.tsa.statespace.SARIMAX(df['Travellers'],order=param,seasonal_order=(1,1,1,12))
+            results = mod.fit()
+            print('ARIMA{}x{}12 - AIC:{} - BIC {}'.format(param,param_seasonal,results.aic,results.bic))
+        except: 
+            continue;
+```
+<img src="/assets/image/aic_bic.png" width="70%" height="70%">&nbsp;&nbsp;
+
+&nbsp;&nbsp; 이제 파라미터 조합별 AIC, BIC 수치를 비교할 수 있게 되었다. 일단 AIC와 BIC 수치가 함께 상대적으로 낮은 파라미터 조합((p,d,q)=(0,1,2))을 골라 모델을 학습시키고자 했다. 
 
 
 **5.Seasonal ARIMA**
 
+```python
+model = sm.tsa.statespace.SARIMAX(df['Travellers'],order=(0,1,2), seasonal_order=(1,1,1,12))
+results = model.fit()
+print(results.summary())
+```
 
 
 
