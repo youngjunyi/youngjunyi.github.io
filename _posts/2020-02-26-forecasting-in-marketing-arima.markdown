@@ -141,7 +141,7 @@ print(results.summary())
 results.plot_diagnostics(figsize=(16, 8))
 plt.show()
 ```
-<img src="/assets/image/std_residual.PNG" width="70%" height="70%">&nbsp;&nbsp;
+<img src="/assets/image/std_residual.png" width="70%" height="70%">&nbsp;&nbsp;
 
 &nbsp;&nbsp; 정규화시킨 residual이 가우시안 분포를 따르는지, 자기상관성이 없는지 등의 여부를 이렇게 확인이 가능하다. 2사분면의 그래프를 보면 2015년과 2017년에 residual이 크게 튀는 부분이 있는데 이때 급격한 출국자수 증감이 있었던 것으로 보인다. 그럼 이제 실제 데이터와 얼마나 fit하는지 살펴보도록 하자. 
 
@@ -149,7 +149,7 @@ plt.show()
 df['forecast'] = results.predict(start = 218, end= 241, dynamic= True)  
 df[['Travellers','forecast']].plot(figsize=(12,8))
 ```
-<img src="/assets/image/forecast_fit.PNG" width="70%" height="70%">&nbsp;&nbsp;
+<img src="/assets/image/forecast_fit.png" width="70%" height="70%">&nbsp;&nbsp;
 
 &nbsp;&nbsp; 추세에 공통점이 있지만 2년 간의 데이터를 예측하도록 했더니 월별 격차가 꽤 생겨나는 것을 볼 수 있다. 당연한 이야기지만 예측하는 기간을 더 줄이면 정확도는 올라간다. 이제 DataFrame에 '미래의 연월' Index를 추가하여 Forecasting 라인을 그려보자.  
 
@@ -165,7 +165,7 @@ future_df = pd.concat([df,future_dates_df])
 future_df['forecast'] = results.predict(start = 218, end = 265, dynamic= True)  
 future_df[['Travellers', 'forecast']].plot(figsize=(12, 8)) 
 ```
-<img src="/assets/image/forecast.PNG" width="70%" height="70%">&nbsp;&nbsp;
+<img src="/assets/image/forecast.png" width="70%" height="70%">&nbsp;&nbsp;
 
 &nbsp;&nbsp; 이 모델은 얼마나 맞을까? 일단 COVID-19 바이러스로 인해 2월 예측치부터 엄청나게 틀릴 것이라고 본다. ARIMA는 근본적으로 시간에 따른 자기상관성(Auto-Regression), 시계열 데이터의 정상성(Stationarity), 잔차의 이동평균(Moving Average)를 활용한 예측 모델이므로 이러한 Black Swan을 예측하기에는 한계가 분명하다(다른 예측모델도 마찬가지겠지만). 뿐만 아니라 음력을 따르는 휴일, 성장 추세 등을 반영하기에도 어려움이 있을 것이다. 그러나 다른 예측 모델을 활용하기에 앞서 ARIMA가 대략적으로 어떻게 작동하는지를 이해하는 것이 추후에 적절한 모델 선택을 하는데 도움이 될거라 생각한다. 
 
