@@ -80,7 +80,7 @@ adfuller_test(df['Seasonal 1st Diff'].dropna())
 <img src="/assets/image/adfuller1.PNG" width="70%" height="70%">&nbsp;&nbsp;  
 <img src="/assets/image/adfuller2.PNG" width="70%" height="70%">&nbsp;&nbsp;  
 
-adfuller test 결과 lag 1 Differencing에서, 또 lag 1 Seasonal Differencing에서 정상성(Stationarity)가 인정된다. 따라서 d=1, D=1로 파라미터 값을 지정할 수 있다. 
+adfuller test 결과 lag 1 Differencing에서, 또 lag 1 Seasonal Differencing에서 정상성(Stationarity)이 인정된다. 따라서 d=1, D=1로 파라미터 값을 지정할 수 있다. 
 
 
 **4.ACF/PACF Interpretation**
