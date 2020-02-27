@@ -165,7 +165,7 @@ future_df = pd.concat([df,future_dates_df])
 future_df['forecast'] = results.predict(start = 218, end = 265, dynamic= True)  
 future_df[['Travellers', 'forecast']].plot(figsize=(12, 8)) 
 ```
-<img src="/assets/image/forecast.png" width="70%" height="70%">&nbsp;&nbsp;
+<img src="/assets/image/forecast.png" width="100%" height="100%">&nbsp;&nbsp;
 
 &nbsp;&nbsp; 이 예측은 얼마나 맞을까? 일단 COVID-19 바이러스로 인해 2월 예측치부터 엄청나게 틀릴 것이라고 본다. ARIMA는 근본적으로 시간에 따른 자기상관성(Auto-Regression), 시계열 데이터의 정상성(Stationarity), 잔차의 이동평균(Moving Average)을 활용한 예측 모델이므로 이러한 Black Swan을 예측하기에는 한계가 분명하다(다른 예측모델도 마찬가지겠지만). 뿐만 아니라 음력을 따르는 휴일, 성장 추세 등을 반영하기에도 어려움이 있을 것이다. 그러나 다른 예측 모델을 활용하기에 앞서 ARIMA가 대략적으로 어떻게 작동하는지를 이해하는 것이 추후에 적절한 모델 선택을 하는데 도움이 될거라 생각한다. 
 
